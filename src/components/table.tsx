@@ -1,8 +1,10 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { OverlayPanel } from "primereact/overlaypanel";
 import "primereact/resources/primereact.min.css";
+
+
 
 export default function PaginatorBasicDemo() {
   const [customers] = useState([
@@ -14,17 +16,46 @@ export default function PaginatorBasicDemo() {
 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [visible, setVisible] = useState(false);
-  const op = useRef(null); // reference to overlay panel
+  const op = useRef(null); 
+  
 
   const toggleOverlay = (event) => {
+
+    console.log(event);
+    
     if(visible){
       op.current.hide();
+      setVisible(false);
     }
     else{
       op.current.show(event);
+      setVisible(true);
     }
     
   };
+const [artworks, setArtworks] = useState([]);
+const [page, setPage] = useState(1);
+const [loading, setLoading] = useState(false);
+
+
+    useEffect(() => {
+    const fetchInfo = async () => {
+      try {
+        const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=1`);
+        const data = await response.json();
+        console.log(data.data);
+        
+
+      } 
+      
+      
+      catch (error) {
+     console.log("Error fetching artworks:", error);
+      }
+    };
+    fetchInfo();
+  }, []);
+
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
@@ -58,7 +89,7 @@ export default function PaginatorBasicDemo() {
                   className="flex items-center justify-center gap-2 cursor-pointer select-none group"
                   
                 >
-                  <span className="text-gray-500 text-sm transition-transform group-hover:text-gray-900">
+                  <span className={`text-gray-500 text-sm ${visible} ? "rotate-180  transition-transform text-gray-900" : ""}`}>
                     ▼
                   </span>
                 </div>

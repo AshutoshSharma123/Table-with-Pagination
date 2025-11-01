@@ -7,22 +7,18 @@ import "primereact/resources/primereact.min.css";
 
 
 export default function PaginatorBasicDemo() {
-  const [customers] = useState([
-    { title: "The Starry Night", place: "Netherlands", artist: "Vincent van Gogh", startDate: "1889", endDate: "1889" },
-    { title: "Mona Lisa", place: "Italy", artist: "Leonardo da Vinci", startDate: "1503", endDate: "1506" },
-    { title: "The Persistence of Memory", place: "Spain", artist: "Salvador Dalí", startDate: "1931", endDate: "1931" },
-    { title: "Girl with a Pearl Earring", place: "Netherlands", artist: "Johannes Vermeer", startDate: "1665", endDate: "1665" },
-  ]);
 
+  const [artworks, setArtworks] = useState([]);        
+
+
+  const op = useRef(null); 
   const [selectedCustomers, setSelectedCustomers] = useState([]);
   const [visible, setVisible] = useState(false);
-  const op = useRef(null); 
+
   
 
   const toggleOverlay = (event) => {
-
-    console.log(event);
-    
+  
     if(visible){
       op.current.hide();
       setVisible(false);
@@ -33,26 +29,31 @@ export default function PaginatorBasicDemo() {
     }
     
   };
-const [artworks, setArtworks] = useState([]);
-const [page, setPage] = useState(1);
-const [loading, setLoading] = useState(false);
-
+  
 
     useEffect(() => {
     const fetchInfo = async () => {
       try {
         const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=1`);
         const data = await response.json();
-        console.log(data.data);
-        
+        console.log('data while fetching->' , [data.data]);
+ 
+  const simplifiedData = data.data.map((item) => ({
+  id: item.id,
+  title: item.title,
+  place: item.place_of_origin,
+  artist: item.artist_title,
+  startDate: item.date_start,
+  endDate: item.date_end,
+}));  
 
-      } 
-      
-      
-      catch (error) {
-     console.log("Error fetching artworks:", error);
+ setArtworks(simplifiedData);
+  console.log("Data->", simplifiedData);
+}  catch (error) {
+  console.log("Error fetching artworks:", error);
+}
       }
-    };
+
     fetchInfo();
   }, []);
 
@@ -72,7 +73,7 @@ const [loading, setLoading] = useState(false);
       <div className="w-full max-w-6xl bg-white shadow-xl rounded-2xl p-6 border border-gray-200">
         <div className="overflow-hidden rounded-xl border border-gray-300">
           <DataTable
-            value={customers}
+            value={artworks}
             selectionMode="checkbox"
             selection={selectedCustomers}
             onSelectionChange={(e) => setSelectedCustomers(e.value)}
@@ -89,7 +90,7 @@ const [loading, setLoading] = useState(false);
                   className="flex items-center justify-center gap-2 cursor-pointer select-none group"
                   
                 >
-                  <span className={`text-gray-500 text-sm ${visible} ? "rotate-180  transition-transform text-gray-900" : ""}`}>
+                  <span className={`text-gray-500 text-sm ${visible ? "rotate-180  transition-transform text-gray-900" : ""}`}>
                     ▼
                   </span>
                 </div>

@@ -63,7 +63,7 @@ export default function PaginatorBasicDemo() {
 
 
 
-          <OverlayPanel ref={op}>
+          <OverlayPanel ref={op} onHide={() => setVisible(false)}>
         <div className="p-3 text-sm text-gray-700">
           <input type="number" placeholder="enter number of rows to be selected" className="border border-gray-300 rounded-md p-1" />
           <button className="ml-2 bg-blue-500 text-white rounded-md px-2 py-1">Select</button>
@@ -84,25 +84,41 @@ export default function PaginatorBasicDemo() {
           >
             <Column
               selectionMode="multiple"
+className="w-[1rem]"
+            />
+
+            <Column 
               header={
                 <div
                   onClick={toggleOverlay}
-                  className="flex items-center justify-center gap-2 cursor-pointer select-none group"
+                  className="flex items-center w-[0.3rem] justify-center  cursor-pointer select-none group"
                   
                 >
-                  <span className={`text-gray-500 text-sm ${visible ? "rotate-180  transition-transform text-gray-900" : ""}`}>
-                    ▼
-                  </span>
-                </div>
-              }
-              headerStyle={{ width: "3rem" }}
-            />
+             <span
+  className={`text-sm transition-transform duration-300 ${
+    visible
+      ? "rotate-180 text-gray-900"
+      : "rotate-0 text-gray-500"
+  }`}
+>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 224.008 224.008"
+  className={`w-3 h-3 transition-transform duration-300 ${
+    visible ? "rotate-180 fill-gray-900" : "rotate-0 fill-gray-500"
+  }`}
+>
+  <path d="M197.299 7.933l-85.5 171-84.9-171c-8.4-16.8-33.6-4.2-25.2 12.6l97.5 195.6c5.3 10.5 20 10.5 25.2 0l98-195.6c1.1-1.6 1.6-4.2 1.6-6.3 0-9.4-20.4-14.1-26.7-0.9z" />
+</svg>
 
-            <Column field="title" header="Title" style={{ width: "20%" }} />
-            <Column field="place" header="Place of Origin" style={{ width: "20%" }} />
-            <Column field="artist" header="Artist" style={{ width: "20%" }} />
-            <Column field="startDate" header="Start Date" style={{ width: "20%" }} />
-            <Column field="endDate" header="End Date" style={{ width: "20%" }} />
+</span>
+                </div>
+              } className="w-1" />
+            <Column field="title" header="Title"      className="w-[3rem]"/>
+            <Column field="place" header="Place of Origin"      className="w-[3rem]"/>
+            <Column field="artist" header="Artist"     className="w-[3rem]" />
+            <Column field="startDate" header="Start Date"      className="w-[3rem]"/>
+            <Column field="endDate" header="End Date"      className="w-[3rem]"/>
           </DataTable>
         </div>
       </div>

@@ -47,7 +47,7 @@ if (visible) {
   op.current?.hide();
   setVisible(false);
 } else {
-  op.current?.show(event);
+  op.current?.show(event,event.currentTarget);
   setVisible(true);
 }
 

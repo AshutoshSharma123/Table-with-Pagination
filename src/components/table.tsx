@@ -43,10 +43,10 @@ const [rowNumber, setrowNumber] = useState(0)
   const toggleOverlay = (event:any) => {
   
 if (visible) {
-  op.current.hide();
+  op.current?.hide();
   setVisible(false);
 } else {
-  op.current.show(event);
+  op.current?.show(event);
   setVisible(true);
 }
 
@@ -61,7 +61,7 @@ if (visible) {
       const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=${page}`);
       const data = await response.json();
 
-      const simplifiedData = data.data.map((item) => ({
+      const simplifiedData = data.data.map((item:any) => ({
         id: item.id,
         title: item.title,
         place: item.place_of_origin,
@@ -103,7 +103,7 @@ if (visible) {
 
 
 
-  const onPage = (event) => {
+  const onPage = (event:any) => {
     const newPage = event.page + 1; // API starts at 1
     setFirst(event.first);
     setRows(event.rows);

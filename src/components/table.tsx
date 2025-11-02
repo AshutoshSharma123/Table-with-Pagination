@@ -6,6 +6,7 @@ import "primereact/resources/primereact.min.css";
 
 
 
+
 export default function PaginatorBasicDemo() {
 
   const [artworks, setArtworks] = useState([]);        
@@ -16,6 +17,19 @@ export default function PaginatorBasicDemo() {
   const [visible, setVisible] = useState(false);
 
   
+
+
+
+  const [first, setFirst] = useState(0);
+const [rows, setRows] = useState(12);
+const [total, setTotal] = useState(0);
+const [loading, setLoading] = useState(false);
+
+
+
+
+const [rowNumber, setrowNumber] = useState(0)
+  const [selectedCount, setSelectedCount] = useState(0);
 
   const toggleOverlay = (event) => {
   
@@ -31,32 +45,70 @@ export default function PaginatorBasicDemo() {
   };
   
 
-    useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=1`);
-        const data = await response.json();
-        console.log('data while fetching->' , [data.data]);
- 
-  const simplifiedData = data.data.map((item) => ({
-  id: item.id,
-  title: item.title,
-  place: item.place_of_origin,
-  artist: item.artist_title,
-  startDate: item.date_start,
-  endDate: item.date_end,
-}));  
 
- setArtworks(simplifiedData);
-  console.log("Data->", simplifiedData);
-}  catch (error) {
-  console.log("Error fetching artworks:", error);
-}
-      }
+  const fetchInfo = async (page = 1) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`https://api.artic.edu/api/v1/artworks?page=${page}`);
+      const data = await response.json();
 
-    fetchInfo();
+      const simplifiedData = data.data.map((item) => ({
+        id: item.id,
+        title: item.title,
+        place: item.place_of_origin,
+        artist: item.artist_title,
+        startDate: item.date_start,
+        endDate: item.date_end,
+      }));
+
+      setArtworks(simplifiedData);
+      setTotal(data.pagination.total);
+
+
+
+          console.log(`${page} fetched successfully.`);
+    console.log(` Number of rows fetched this time: ${simplifiedData.length}`);
+
+
+ if (rowNumber > selectedCount) {
+      const remaining = rowNumber - selectedCount;
+      const toSelect = simplifiedData.slice(0, remaining);
+      const newSelection = [...selectedCustomers, ...toSelect];
+      setSelectedCustomers(newSelection);
+      setSelectedCount(newSelection.length);
+      console.log(`Auto-selected ${toSelect.length} more rows`);}
+
+
+
+    } catch (error) {
+      console.error("Error fetching artworks:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+  useEffect(() => {
+    fetchInfo(1);
   }, []);
 
+
+
+  const onPage = (event) => {
+    const newPage = event.page + 1; // API starts at 1
+    setFirst(event.first);
+    setRows(event.rows);
+    fetchInfo(newPage);
+    console.log('new page fetched ->',newPage);
+  };
+
+  const handleSelect = () => {
+    if (rowNumber <= 0) return;
+    const toSelect = artworks.slice(0, rowNumber);
+    setSelectedCustomers(toSelect);
+    setSelectedCount(toSelect.length);
+    console.log(`Manually selected ${toSelect.length} rows`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
@@ -65,8 +117,14 @@ export default function PaginatorBasicDemo() {
 
           <OverlayPanel ref={op} onHide={() => setVisible(false)}>
         <div className="p-3 text-sm text-gray-700">
-          <input type="number" placeholder="enter number of rows to be selected" className="border border-gray-300 rounded-md p-1" />
-          <button className="ml-2 bg-blue-500 text-white rounded-md px-2 py-1">Select</button>
+          <input type="number"
+          
+             value={rowNumber}
+            onChange={(e) => setrowNumber(Number(e.target.value))}
+            placeholder="Enter number of rows"
+            className="border border-gray-300 rounded-md p-1 w-36"
+          />
+          <button onClick={handleSelect} className="ml-2 bg-blue-500 text-white rounded-md px-2 py-1">Select</button>
         </div>
 
       </OverlayPanel>
@@ -74,14 +132,20 @@ export default function PaginatorBasicDemo() {
         <div className="overflow-hidden rounded-xl border border-gray-300">
           <DataTable
             value={artworks}
+            paginator
+            lazy
+            rows={rows}
+            totalRecords={total}
+            first={first}
+            loading={loading}
+            onPage={onPage}
             selectionMode="checkbox"
             selection={selectedCustomers}
             onSelectionChange={(e) => setSelectedCustomers(e.value)}
-            paginator
-            rows={10}
-            className="w-full text-gray-800"
             stripedRows
+            className="w-full text-gray-800"
           >
+
             <Column
               selectionMode="multiple"
 className="w-[1rem]"

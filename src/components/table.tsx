@@ -8,12 +8,21 @@ import "primereact/resources/primereact.min.css";
 
 
 export default function PaginatorBasicDemo() {
-
-  const [artworks, setArtworks] = useState([]);        
-
+type Artwork = {
+  id: number;
+  title: string;
+  place: string;
+  artist: string;
+  startDate: number;
+  endDate: number;
+};
 
   const op = useRef(null); 
-  const [selectedCustomers, setSelectedCustomers] = useState([]);
+const [artworks, setArtworks] = useState<Artwork[]>([]);
+
+
+
+const [selectedCustomers, setSelectedCustomers] = useState<Artwork[]>([]);
   const [visible, setVisible] = useState(false);
 
   
@@ -31,16 +40,16 @@ const [loading, setLoading] = useState(false);
 const [rowNumber, setrowNumber] = useState(0)
   const [selectedCount, setSelectedCount] = useState(0);
 
-  const toggleOverlay = (event) => {
+  const toggleOverlay = (event:any) => {
   
-    if(visible){
-      op.current.hide();
-      setVisible(false);
-    }
-    else{
-      op.current.show(event);
-      setVisible(true);
-    }
+if (visible) {
+  op.current.hide();
+  setVisible(false);
+} else {
+  op.current.show(event);
+  setVisible(true);
+}
+
     
   };
   

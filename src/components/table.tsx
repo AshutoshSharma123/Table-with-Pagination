@@ -17,7 +17,8 @@ type Artwork = {
   endDate: number;
 };
 
-  const op = useRef(null); 
+const op = useRef<OverlayPanel | null>(null);
+
 const [artworks, setArtworks] = useState<Artwork[]>([]);
 
 
